@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - MAPS_API_KEY=${MAPS_API_KEY}
+      - REACT_APP_PORT=5173
+    volumes:
+      - ./server:/app
+    networks:
+      - ada-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client/ada-online
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - ada-network
+    restart: unless-stopped
+
+networks:
+  ada-network:
+    driver: bridge
