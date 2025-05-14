@@ -12,14 +12,28 @@ from ADA_Online import ADA # Make sure filename matches ADA_Online.py
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'a_default_fallback_secret_key!')
 
+# For local development
 REACT_APP_PORT = os.getenv('REACT_APP_PORT', '5173')
 REACT_APP_ORIGIN = f"http://localhost:{REACT_APP_PORT}"
 REACT_APP_ORIGIN_IP = f"http://127.0.0.1:{REACT_APP_PORT}"
 
+# For Render deployment
+FRONTEND_URL = os.getenv('FRONTEND_URL', '')
+
+# Determine CORS settings based on environment
+if os.getenv('RENDER', '') == 'true':
+    # When deployed on Render, allow the frontend URL or '*' if not specified
+    cors_origins = [FRONTEND_URL] if FRONTEND_URL else '*'
+    print(f"Running on Render with CORS origins: {cors_origins}")
+else:
+    # For local development, use localhost origins
+    cors_origins = [REACT_APP_ORIGIN, REACT_APP_ORIGIN_IP, '*']
+    print(f"Running locally with CORS origins: {cors_origins}")
+
 socketio = SocketIO(
     app,
     async_mode='threading',
-    cors_allowed_origins=[REACT_APP_ORIGIN, REACT_APP_ORIGIN_IP]
+    cors_allowed_origins=cors_origins
 )
 
 ada_instance = None
@@ -199,9 +213,10 @@ def handle_video_feed_stopped():
 
 
 if __name__ == '__main__':
-    print("Starting Flask-SocketIO server...")
+    port = int(os.getenv('PORT', 5000))
+    print(f"Starting Flask-SocketIO server on port {port}...")
     try:
-        socketio.run(app, debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+        socketio.run(app, debug=True, host='0.0.0.0', port=port, use_reloader=False)
     finally:
         print("\nServer shutting down...")
         if ada_instance:

@@ -1,0 +1,44 @@
+services:
+  # Backend service
+  - type: web
+    name: ada-backend
+    env: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: ./server
+    envVars:
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: MAPS_API_KEY
+        sync: false
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: REACT_APP_PORT
+        value: 10000
+      - key: PORT
+        value: 5000
+      - key: RENDER
+        value: "true"
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: ada-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+    healthCheckPath: /
+
+  # Frontend service
+  - type: web
+    name: ada-frontend
+    env: docker
+    dockerfilePath: ./client/ada-online/Dockerfile
+    dockerContext: ./client/ada-online
+    envVars:
+      - key: VITE_BACKEND_URL
+        fromService:
+          type: web
+          name: ada-backend
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: PORT
+        value: 10000
+    healthCheckPath: /
