@@ -27,7 +27,7 @@ This guide explains how to deploy the ADA (Advanced Design Assistant) applicatio
 3. **Configure Environment Variables**
 
    Render will prompt you to set up the required environment variables:
-   
+
    - `ELEVENLABS_API_KEY`: Your ElevenLabs API key
    - `GOOGLE_API_KEY`: Your Google AI API key
    - `MAPS_API_KEY`: Your Google Maps API key
@@ -75,6 +75,8 @@ Once deployed, you can access your application at the URL provided by Render for
 
 ## Troubleshooting
 
+### Render Deployment Issues
+
 - **Issue**: Backend and frontend can't communicate
   **Solution**: Make sure the `VITE_BACKEND_URL` environment variable in the frontend service is correctly set to the URL of your backend service.
 
@@ -83,6 +85,19 @@ Once deployed, you can access your application at the URL provided by Render for
 
 - **Issue**: Application not loading
   **Solution**: Check the logs in the Render dashboard for both services to identify any errors.
+
+### Local Docker Testing Issues
+
+- **Issue**: "failed to solve: failed to read dockerfile: open Dockerfile: no such file or directory"
+  **Solution**: Use Docker Compose with the provided `docker-compose-start.bat` script instead of individual Docker commands.
+
+- **Issue**: Docker daemon not running
+  **Solution**: Start Docker Desktop and wait for it to fully initialize before running the scripts.
+
+- **Issue**: Port already in use
+  **Solution**: Stop any existing containers with `docker-compose down` before starting new ones.
+
+For more detailed troubleshooting, refer to the `DOCKER_TROUBLESHOOTING.md` file.
 
 ## Additional Information
 

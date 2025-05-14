@@ -4,7 +4,7 @@ services:
   backend:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - "5000:5000"
     environment:
@@ -12,7 +12,9 @@ services:
       - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - MAPS_API_KEY=${MAPS_API_KEY}
-      - REACT_APP_PORT=5173
+      - REACT_APP_PORT=10000
+      - PORT=5000
+      - RENDER=true
     volumes:
       - ./server:/app
     networks:
@@ -22,9 +24,12 @@ services:
   frontend:
     build:
       context: ./client/ada-online
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     ports:
-      - "5173:5173"
+      - "10000:10000"
+    environment:
+      - VITE_BACKEND_URL=http://backend:5000
+      - PORT=10000
     depends_on:
       - backend
     networks:
