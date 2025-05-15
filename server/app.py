@@ -12,6 +12,10 @@ from ADA_Online import ADA # Make sure filename matches ADA_Online.py
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'a_default_fallback_secret_key!')
 
+@app.route('/')
+def health_check():
+    return "ADA Backend is running!"
+
 # For local development
 REACT_APP_PORT = os.getenv('REACT_APP_PORT', '5173')
 REACT_APP_ORIGIN = f"http://localhost:{REACT_APP_PORT}"
@@ -213,10 +217,11 @@ def handle_video_feed_stopped():
 
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 5000))
-    print(f"Starting Flask-SocketIO server on port {port}...")
+    port = int(os.getenv('PORT', 10000))
+    is_production = os.getenv('RENDER', 'false').lower() == 'true'
+    print(f"Starting Flask-SocketIO server on port {port} in {'production' if is_production else 'development'} mode...")
     try:
-        socketio.run(app, debug=True, host='0.0.0.0', port=port, use_reloader=False)
+        socketio.run(app, debug=not is_production, host='0.0.0.0', port=port, use_reloader=False)
     finally:
         print("\nServer shutting down...")
         if ada_instance:
