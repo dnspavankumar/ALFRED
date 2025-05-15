@@ -20,7 +20,7 @@ This guide explains how to deploy the ADA application on Render using Python (wi
    - **Region**: Choose the region closest to your users
    - **Branch**: main (or your preferred branch)
    - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: Leave empty (Render will use the Procfile)
+   - **Start Command**: `python app.py`
    - **Plan**: Free
 
 6. Add environment variables:
@@ -65,6 +65,7 @@ Once both services are deployed, go to the URL of your frontend service to acces
 - **Application Error**: Check the logs in the Render dashboard
 - **No Open Ports Detected**: Make sure your app is binding to the PORT environment variable
 - **WebSocket Connection Failed**: Check CORS settings and make sure the frontend URL is allowed
+- **Werkzeug Error**: If you see "RuntimeError: The Werkzeug web server is not designed to run in production", make sure you're using `allow_unsafe_werkzeug=True` in the socketio.run() call
 
 ### Frontend Issues
 

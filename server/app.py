@@ -221,7 +221,7 @@ if __name__ == '__main__':
     is_production = os.getenv('RENDER', 'false').lower() == 'true'
     print(f"Starting Flask-SocketIO server on port {port} in {'production' if is_production else 'development'} mode...")
     try:
-        socketio.run(app, debug=not is_production, host='0.0.0.0', port=port, use_reloader=False)
+        socketio.run(app, debug=not is_production, host='0.0.0.0', port=port, use_reloader=False, allow_unsafe_werkzeug=True)
     finally:
         print("\nServer shutting down...")
         if ada_instance:
